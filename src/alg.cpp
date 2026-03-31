@@ -1,7 +1,7 @@
 // Copyright 2021 NNTU-CS
 int countEqual(int *arr, int Left, int Right, int target) {
     if (Left > Right) return 0;
-
+}
 int countPairs1(int *arr, int len, int value) {
     int count = 0;
     
