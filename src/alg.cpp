@@ -19,7 +19,6 @@ int binarySearch(int *arr, int l, int r, int target) {
 int countPairs1(int *arr, int len, int value) {
     int count = 0;
     
-    
     for (int i = 0; i < len; i++) {
         for (int j = i + 1; j < len; j++) {
             if (arr[i] + arr[j] == value) {
@@ -40,31 +39,24 @@ int countPairs2(int *arr, int len, int value) {
         int sum = arr[left] + arr[right];
         
         if (sum == value) {
-      
+            if (arr[left] == arr[right]) {
+                int n = right - left + 1;
+                count += n * (n - 1) / 2;
+                break;
+            }
             int left_val = arr[left];
-            int right_val = arr[right];
-        
-            int left_c = 1;
-            while (left + 1 < right && arr[left + 1] == left_val) {
-                left_c++;
+            int left_count = 0;
+            while (left <= right && arr[left] == left_val) {
+                left_count++;
                 left++;
             }
-            
-   
-            int right_c = 1;
-            while (right - 1 > left && arr[right - 1] == right_val) {
-                right_c++;
+            int right_val = arr[right];
+            int right_count = 0;
+            while (right >= left && arr[right] == right_val) {
+                right_count++;
                 right--;
             }
-           
-            if (left_val == right_val) {
-                count += (left_c * (left_c - 1)) / 2;
-            } else {
-                count += left_c * right_c;
-            }
-            
-            left++;
-            right--;
+            count += left_count * right_count;
         }
         else if (sum < value) {
             left++;
@@ -79,22 +71,42 @@ int countPairs2(int *arr, int len, int value) {
 
 int countPairs3(int *arr, int len, int value) {
     int count = 0;
+    
     for (int i = 0; i < len; i++) {
         int target = value - arr[i];
+        
         if (target < 0) continue;
-        int j = binarySearch(arr, i + 1, len - 1, target);
-        if (j != -1) {
-            count++;
-            int k = j + 1;
-            while (k < len && arr[k] == target) {
-                count++;
-                k++;
+        int first = -1;
+        int left = i + 1;
+        int right = len - 1;
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (arr[mid] >= target) {
+                if (arr[mid] == target) first = mid;
+                right = mid - 1;
             }
-            k = j - 1;
-            while (k > i && arr[k] == target) {
-                count++;
-                k--;
+            else {
+                left = mid + 1;
             }
+        }
+        
+        if (first != -1) {
+            int last = first;
+            left = first + 1;
+            right = len - 1;
+            
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
+                if (arr[mid] == target) {
+                    last = mid;
+                    left = mid + 1;
+                }
+                else {
+                    right = mid - 1;
+                }
+            }
+            count += (last - first + 1);
         }
     }
     
